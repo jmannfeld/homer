@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { program } from "commander";
+import { program, Command } from "commander";
 import chalk from "chalk";
 ``;
 import figlet from "figlet";
@@ -15,6 +15,7 @@ const packageJson = JSON.parse(
 );
 
 program
+  .name("homer")
   .version(packageJson.version, "-v, --version")
   .description("CLI for managing tags in git repositories")
   .action(() => {
@@ -30,9 +31,23 @@ program
   .description("Create a new tag in the current branch")
   .action(tagCommand);
 
-program
-  .command("fork")
-  .description("Create a new release branch from the current branch")
-  .action(forkCommand);
+const fork = new Command("fork").description(
+  "Create a new release branch from the current branch"
+);
+
+program.addCommand(fork);
+
+fork
+  .command("minor")
+  .description("Create a new minor release")
+  .action(() => {
+    forkCommand("minor");
+  });
+fork
+  .command("major")
+  .description("Create a new major release")
+  .action(() => {
+    forkCommand("major");
+  });
 
 program.parse(process.argv);
