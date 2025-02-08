@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+import { program } from "commander";
+import chalk from "chalk";
+``;
+import figlet from "figlet";
+
+import { readFile } from "fs/promises";
+
+import forkCommand from "../commands/fork.js";
+import tagCommand from "../commands/tag.js";
+
+const packageJson = JSON.parse(
+  await readFile(new URL("../package.json", import.meta.url), "utf-8")
+);
+
+program
+  .version(packageJson.version, "-v, --version")
+  .description("CLI for managing tags in git repositories")
+  .action(() => {
+    console.log(
+      chalk.greenBright(
+        figlet.textSync("Homer CLI", { horizontalLayout: "full" })
+      )
+    );
+  });
+
+program
+  .command("tag")
+  .description("Create a new tag in the current branch")
+  .action(tagCommand);
+
+program
+  .command("fork")
+  .description("Create a new release branch from the current branch")
+  .action(forkCommand);
+
+program.parse(process.argv);
