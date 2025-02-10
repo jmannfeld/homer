@@ -14,10 +14,9 @@ import {
  * - Computes the appropriate `preid` based on the branch type.
  * - Creates a new pre-release tag using `npm version prerelease`.
  * - Pushes the new version commit and tag to the remote repository.
- *
- * @param {string} typeOfTag - The type of tag to create (e.g., "prerelease").
+ * @async
  */
-export default async function tagCommand(typeOfTag) {
+export default async function tagCommand() {
   const git = simpleGit();
 
   try {

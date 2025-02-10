@@ -18,9 +18,10 @@ import {
  * - Pushes the new version commit and tag to remote.
  *
  * @async
+ * @param {string} skipPrompt - Overriding the yes prompt.
  * @throws {Error} If the command is run outside a release branch or if tagging fails.
  */
-export default async function finalTagCommand() {
+export default async function finalTagCommand(skipPrompt) {
   const git = simpleGit();
 
   try {
@@ -45,6 +46,14 @@ export default async function finalTagCommand() {
     // Determine next version bump (major, minor, patch)
     const nextVersion = semver.inc(latestTag, getNextReleaseType(latestTag));
 
+    // If -y flag is set, bypass the prompt and proceed immediately
+    if (skipPrompt) {
+      console.log(`🏗️ Creating tag: \x1b[1m${nextVersion}\x1b[0m`);
+      executeFinalTagCreation(nextVersion, currentBranch);
+      return;
+    }
+
+    // Otherwise, prompt for confirmation
     const prompt = await inquirer.prompt([
       {
         type: "confirm",
@@ -54,16 +63,7 @@ export default async function finalTagCommand() {
     ]);
 
     if (prompt.confirm) {
-      // Run npm version command
-      const newTag = execSync(`npm version ${nextVersion}`, { stdio: "pipe" })
-        .toString()
-        .trim();
-      console.log(`\n🏷️ New tag created: \x1b[1m${newTag}\x1b[0m\n`);
-
-      // Push version commit and tag
-      pushVersionCommitAndTag(currentBranch);
-
-      console.log("✅ Final version updated successfully!");
+      executeFinalTagCreation(nextVersion, currentBranch);
     } else {
       console.log("\n🚧 Tag creation aborted.");
       process.exit(0);
@@ -71,6 +71,25 @@ export default async function finalTagCommand() {
   } catch (error) {
     console.error("❌ Error: Unable to tag final version.");
     console.error(error.message);
+    process.exit(1);
+  }
+}
+
+// Helper function to execute final tag creation
+function executeFinalTagCreation(nextVersion, currentBranch) {
+  try {
+    // Run npm version command
+    const newTag = execSync(`npm version ${nextVersion}`, { stdio: "pipe" })
+      .toString()
+      .trim();
+    console.log(`\n🏷️ New tag created: \x1b[1m${newTag}\x1b[0m\n`);
+
+    // Push version commit and tag
+    pushVersionCommitAndTag(currentBranch);
+
+    console.log("✅ Final version updated successfully!");
+  } catch (error) {
+    console.error("❌ Error creating the final tag:", error);
     process.exit(1);
   }
 }

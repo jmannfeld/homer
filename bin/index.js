@@ -52,7 +52,8 @@ async function main() {
   tag
     .command("final")
     .description("Create a final tag in the current branch")
-    .action(finalTagCommand);
+    .option("-y, --yes", "Skip confirmation prompts")
+    .action((options) => finalTagCommand(options.yes));
 
   // Define 'fork' command with subcommands
   const fork = new Command("fork")
@@ -68,11 +69,13 @@ async function main() {
   fork
     .command("minor")
     .description("Create a new minor release")
-    .action(() => forkCommand("minor"));
+    .option("-y, --yes", "Skip confirmation prompts")
+    .action((options) => forkCommand("minor", options.yes));
   fork
     .command("major")
     .description("Create a new major release")
-    .action(() => forkCommand("major"));
+    .option("-y, --yes", "Skip confirmation prompts")
+    .action((options) => forkCommand("major", options.yes));
 
   program.addCommand(fork);
   program.addCommand(tag);

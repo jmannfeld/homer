@@ -19,9 +19,11 @@ import {
  * - Increments the main branch version accordingly.
  * - Pushes all changes and tags to the remote repository.
  *
+ * @async
  * @param {string} typeOfFork - The type of fork to create (`major` or `minor`).
+ * @param {string} skipPrompt - The type of tag to create (e.g.,
  */
-export default async function forkCommand(typeOfFork) {
+export default async function forkCommand(typeOfFork, skipPrompt = false) {
   const git = simpleGit();
 
   try {
@@ -41,7 +43,7 @@ export default async function forkCommand(typeOfFork) {
 
     const currentVersion = await getPackageVersion();
 
-    await createReleaseBranchAndTag(currentVersion, typeOfFork);
+    await createReleaseBranchAndTag(currentVersion, typeOfFork, skipPrompt);
 
     console.log(chalk.gray("────────────────────────────────────\n"));
 
