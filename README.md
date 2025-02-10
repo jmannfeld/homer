@@ -40,11 +40,15 @@ npm install
 
 ### 3. Link the CLI
 
-This will link the homer CLI so you can use it globally:
+Run the following command to link the package so that you can use the `homer` CLI globally:
 
 ```sh
 npm link
 ```
 
+### 4. Use the CLI
+
 🎉 You're all set!
 Now you can start using the project. 🚀
+
+Run `homer --help` to view all of the available commands.
