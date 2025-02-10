@@ -81,9 +81,9 @@ Create a pre-release tag:
 homer tag
 ```
 
-- In the `main` branch, this command creates `-dev` tags.
-- In `release/X.X` branches, this command creates `-rc` tags.
-- In all other branches, this command creates and increments tags based on the branch name.
+- In the `main` branch, this command creates and increments `-dev` tags.
+- In `release/X.X` branches, this command creates and increments `-rc` tags.
+- In all other branches, this command creates and increments tags using the branch name (e.g., `v1.2.0-OTS25-101.1`).
 
 Create a final release tag:
 
@@ -91,7 +91,7 @@ Create a final release tag:
 homer tag final
 ```
 
-- In `release/X.X` branches, this command creates final tags.
+- In `release/X.X` branches, this command creates final tags (e.g., `v1.2.0`).
 
 ### 🔀 Branch Management
 
@@ -101,7 +101,7 @@ Create a new minor release branch:
 homer fork minor
 ```
 
-- Creates a minor release branch (e.g., `release/1.3`).
+- Creates a minor release branch (e.g., `release/1.2`).
 
 Create a new major release branch:
 
