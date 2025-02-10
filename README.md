@@ -46,8 +46,6 @@ Run the following command to link the package so that you can use the `homer` CL
 npm link
 ```
 
-### 4. Use the CLI
-
 🎉 You're all set!
 Now you can start using the project. 🚀
 
