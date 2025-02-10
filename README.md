@@ -24,7 +24,7 @@ Follow these steps to set up the project:
 
 ### 1. Install and Use the Correct Node Version
 
-Run the following command to install and use the correct Node.js version:
+Run the following command to install and use the correct Node.js version (uses the version in `.nvmrc`):
 
 ```sh
 nvm install && nvm use
