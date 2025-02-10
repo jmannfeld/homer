@@ -17,8 +17,8 @@ Follow these steps to set up the project:
 
 ## Prerequisites
 
-- Ensure you have [NVM](https://github.com/nvm-sh/nvm) installed.
-- Ensure you have Node.js and npm installed.
+- Ensure you have [nvm](https://github.com/nvm-sh/nvm) installed.
+- Ensure you have [Node.js and npm](https://nodejs.org/en) installed.
 
 ## Installation Steps
 
@@ -57,6 +57,11 @@ Run `homer` to display the available commands:
 
 ```sh
 homer
+```
+
+### ❓ Help
+
+```sh
 homer -h
 homer --help
 ```
@@ -68,7 +73,7 @@ homer -v
 homer --version
 ```
 
-## 🔄 Commands
+## ⚙️ Commands
 
 ### 🏷️ Tag Management
 
@@ -78,7 +83,9 @@ Create a pre-release tag:
 homer tag
 ```
 
-- Tags the current branch with a pre-release version.
+- In the `main` branch, this command creates `-dev` tags.
+- In `release/X.X` branches, this command creates `-rc` tags.
+- In all other branches, this command creates and increments tags based on the branch name.
 
 Create a final release tag:
 
@@ -86,7 +93,7 @@ Create a final release tag:
 homer tag final
 ```
 
-- Tags the current branch with a final version.
+- In `release/X.X` branches, this command creates final tags.
 
 ### 🔀 Branch Management
 
@@ -96,7 +103,7 @@ Create a new minor release branch:
 homer fork minor
 ```
 
-- Creates a minor release branch (e.g., release/1.3).
+- Creates a minor release branch (e.g., `release/1.3`).
 
 Create a new major release branch:
 
@@ -104,22 +111,4 @@ Create a new major release branch:
 homer fork major
 ```
 
-Creates a major release branch (e.g., release/2.0).
-
-## ⚙️ How It Works
-
-### 📌 Forking Strategy
-
-`homer fork minor` → Creates a new minor release branch.
-
-`homer fork major` → Creates a new major release branch.
-
-### 🏷️ Tagging Strategy
-
-`homer tag` → Creates a pre-release tag.
-
-- In main branch: '-dev' tag
-- In release branches: '-rc' tag
-- All other branches will create and increment tags based on the branch name
-
-`homer tag final` → Converts a release candidate into a final version.
+Creates a major release branch (e.g., `release/2.0`).

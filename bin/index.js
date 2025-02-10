@@ -32,7 +32,6 @@ async function main() {
   program
     .name("homer")
     .version(cliPackageJson.version, "-v, --version", "Display the CLI version")
-
     .description("CLI for managing tags and branches in Git repositories")
     .action(() => {
       console.log(
@@ -40,6 +39,7 @@ async function main() {
           figlet.textSync("Homer CLI", { horizontalLayout: "full" })
         )
       );
+      program.help();
     });
 
   // Define 'tag' command with a subcommand
@@ -53,7 +53,7 @@ async function main() {
 
   // Define 'fork' command with subcommands
   const fork = new Command("fork").description(
-    "Create a new release branch from the current branch"
+    "Fork a release branch from the current branch"
   );
   fork
     .command("minor")
