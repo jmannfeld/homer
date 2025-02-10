@@ -58,15 +58,19 @@ async function main() {
   const fork = new Command("fork")
     .description("Fork a release branch from the current branch")
     .helpCommand(false) // Hide default help command
-    .helpOption("-h, --help", helpText);
-  fork
-    .command("minor")
-    .description("Create a new minor release")
-    .action(() => forkCommand("minor"));
+    .helpOption("-h, --help", helpText)
+    .addHelpText(
+      "after",
+      "\nError: 'major' or 'minor' command is required to fork"
+    );
   fork
     .command("major")
     .description("Create a new major release")
     .action(() => forkCommand("major"));
+  fork
+    .command("minor")
+    .description("Create a new minor release")
+    .action(() => forkCommand("minor"));
 
   program.addCommand(fork);
   program.addCommand(tag);
