@@ -47,7 +47,7 @@ npm link
 ```
 
 🎉 You're all set!
-Now you can start using the project. 🚀
+Now you can start using the CLI. 🚀
 
 ## 📌 Usage
 
