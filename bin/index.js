@@ -28,11 +28,13 @@ async function loadCliPackageJson() {
 // Initialize CLI
 async function main() {
   const cliPackageJson = await loadCliPackageJson();
+  const helpText = "Display usage information for each command";
 
   program
     .name("homer")
-    .version(cliPackageJson.version, "-v, --version", "Display the CLI version")
     .description("CLI for managing tags and branches in Git repositories")
+    .version(cliPackageJson.version, "-v, --version", "Display the CLI version")
+    .helpOption("-h, --help", helpText)
     .action(() => {
       console.log(
         chalk.greenBright(
@@ -45,6 +47,7 @@ async function main() {
   // Define 'tag' command with a subcommand
   const tag = new Command("tag")
     .description("Create a tag in the current branch")
+    .helpOption("-h, --help", helpText)
     .action(tagCommand); // Default action if just 'homer tag' is run;
   tag
     .command("final")
@@ -52,9 +55,10 @@ async function main() {
     .action(finalTagCommand);
 
   // Define 'fork' command with subcommands
-  const fork = new Command("fork").description(
-    "Fork a release branch from the current branch"
-  );
+  const fork = new Command("fork")
+    .description("Fork a release branch from the current branch")
+    .helpCommand(false) // Hide default help command
+    .helpOption("-h, --help", helpText);
   fork
     .command("minor")
     .description("Create a new minor release")
