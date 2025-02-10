@@ -1,6 +1,6 @@
 # Homer Command Line Interface
 
-## CLI for managing tags and branches in Git repositories
+## CLI for Managing Tags and Branches in Git Repositories
 
 If **Herodotus** (often considered the "Father of History") is to **Python** (a programming language known for its readability and storytelling-like structure), then a comparable figure for **JavaScript** would be **Homer** (the ancient Greek poet famous for epic tales like The Iliad and The Odyssey).
 
