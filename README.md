@@ -88,7 +88,7 @@ homer tag final
 
 - Tags the current branch with a final version.
 
-## 🔀 Branch Management
+### 🔀 Branch Management
 
 Create a new minor release branch:
 
