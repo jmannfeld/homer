@@ -102,6 +102,8 @@ homer fork minor
 ```
 
 - Creates a minor release branch (e.g., `release/1.2`).
+- Creates next `-rc` tag in release branch (e.g., `v1.2.0-rc.0`).
+- Increments main branch with next `-dev` tag (e.g., `v1.3.0-dev.0`).
 
 Create a new major release branch:
 
@@ -109,4 +111,6 @@ Create a new major release branch:
 homer fork major
 ```
 
-Creates a major release branch (e.g., `release/2.0`).
+- Creates a major release branch (e.g., `release/2.0`).
+- Creates next `-rc` tag in release branch (e.g., `v2.0.0-rc.0`).
+- Increments main branch with next `-dev` tag (e.g., `v2.1.0-dev.0`).
