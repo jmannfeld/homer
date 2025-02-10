@@ -1,6 +1,7 @@
-import { execSync } from "child_process";
+import inquirer from "inquirer";
 import simpleGit from "simple-git";
 import semver from "semver";
+import { execSync } from "child_process";
 import {
   getPackageVersion,
   pushVersionCommitAndTag,
@@ -44,16 +45,29 @@ export default async function finalTagCommand() {
     // Determine next version bump (major, minor, patch)
     const nextVersion = semver.inc(latestTag, getNextReleaseType(latestTag));
 
-    // Run npm version command
-    const newTag = execSync(`npm version ${nextVersion}`, { stdio: "pipe" })
-      .toString()
-      .trim();
-    console.log(`🏷️ New tag created: \x1b[1m${newTag}\x1b[0m\n`);
+    const prompt = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "confirm",
+        message: `Create final tag: ${nextVersion}?`,
+      },
+    ]);
 
-    // Push version commit and tag
-    pushVersionCommitAndTag(currentBranch);
+    if (prompt.confirm) {
+      // Run npm version command
+      const newTag = execSync(`npm version ${nextVersion}`, { stdio: "pipe" })
+        .toString()
+        .trim();
+      console.log(`\n🏷️ New tag created: \x1b[1m${newTag}\x1b[0m\n`);
 
-    console.log("✅ Final version updated successfully!");
+      // Push version commit and tag
+      pushVersionCommitAndTag(currentBranch);
+
+      console.log("✅ Final version updated successfully!");
+    } else {
+      console.log("\n🚧 Tag creation aborted.");
+      process.exit(0);
+    }
   } catch (error) {
     console.error("❌ Error: Unable to tag final version.");
     console.error(error.message);

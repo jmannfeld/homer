@@ -41,7 +41,7 @@ export default async function forkCommand(typeOfFork) {
 
     const currentVersion = await getPackageVersion();
 
-    createReleaseBranchAndTag(currentVersion, typeOfFork);
+    await createReleaseBranchAndTag(currentVersion, typeOfFork);
 
     console.log(chalk.gray("────────────────────────────────────\n"));
 
