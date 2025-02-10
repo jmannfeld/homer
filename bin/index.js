@@ -2,52 +2,73 @@
 
 import { program, Command } from "commander";
 import chalk from "chalk";
-``;
 import figlet from "figlet";
-
 import { readFile } from "fs/promises";
 
 import forkCommand from "../commands/fork.js";
 import tagCommand from "../commands/tag.js";
+import finalTagCommand from "../commands/tagFinal.js";
 
-const packageJson = JSON.parse(
-  await readFile(new URL("../package.json", import.meta.url), "utf-8")
-);
-
-program
-  .name("homer")
-  .version(packageJson.version, "-v, --version")
-  .description("CLI for managing tags in git repositories")
-  .action(() => {
-    console.log(
-      chalk.greenBright(
-        figlet.textSync("Homer CLI", { horizontalLayout: "full" })
-      )
+// Load CLI package.json for versioning
+async function loadCliPackageJson() {
+  try {
+    const packageData = await readFile(
+      new URL("../package.json", import.meta.url),
+      "utf-8"
     );
-  });
+    return JSON.parse(packageData);
+  } catch (error) {
+    console.error(
+      "❌ Error: Unable to read package.json. Falling back to default version."
+    );
+    return { version: "0.0.0" };
+  }
+}
 
-program
-  .command("tag")
-  .description("Create a new tag in the current branch")
-  .action(tagCommand);
+// Initialize CLI
+async function main() {
+  const cliPackageJson = await loadCliPackageJson();
 
-const fork = new Command("fork").description(
-  "Create a new release branch from the current branch"
-);
+  program
+    .name("homer")
+    .version(cliPackageJson.version, "-v, --version", "Display the CLI version")
 
-program.addCommand(fork);
+    .description("CLI for managing tags and branches in Git repositories")
+    .action(() => {
+      console.log(
+        chalk.greenBright(
+          figlet.textSync("Homer CLI", { horizontalLayout: "full" })
+        )
+      );
+    });
 
-fork
-  .command("minor")
-  .description("Create a new minor release")
-  .action(() => {
-    forkCommand("minor");
-  });
-fork
-  .command("major")
-  .description("Create a new major release")
-  .action(() => {
-    forkCommand("major");
-  });
+  // Define 'tag' command with a subcommand
+  const tag = new Command("tag")
+    .description("Create a tag in the current branch")
+    .action(tagCommand); // Default action if just 'homer tag' is run;
+  tag
+    .command("final")
+    .description("Create a final tag in the current branch")
+    .action(finalTagCommand);
 
-program.parse(process.argv);
+  // Define 'fork' command with subcommands
+  const fork = new Command("fork").description(
+    "Create a new release branch from the current branch"
+  );
+  fork
+    .command("minor")
+    .description("Create a new minor release")
+    .action(() => forkCommand("minor"));
+  fork
+    .command("major")
+    .description("Create a new major release")
+    .action(() => forkCommand("major"));
+
+  program.addCommand(fork);
+  program.addCommand(tag);
+
+  // Parse user input
+  program.parse(process.argv);
+}
+
+main();

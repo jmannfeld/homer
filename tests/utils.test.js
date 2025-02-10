@@ -1,9 +1,66 @@
-import { formatFileSize } from "../lib/utils.js";
-import { describe, it } from "node:test";
-import assert from "node:assert";
+import { getNextMinorVersion, getNextMajorVersion } from "../lib/utils.js";
+import { describe } from "node:test";
 
-describe("formatFileSize function", () => {
-  it('should return "1.00 GB" for sizeBytes = 1073741824', () => {
-    assert.strictEqual(formatFileSize(1073741824), "1.00 GB");
+describe("getNextMajorVersion function", () => {
+  test("should return the next major pre-release version", () => {
+    expect(getNextMajorVersion("1.2.3")).toBe("2.0.0-rc.0");
+  });
+
+  test('should return "2.0.0-rc.0" for currentVersion = "1.0.0"', () => {
+    expect(getNextMajorVersion("1.0.0")).toBe("2.0.0-rc.0");
+  });
+
+  test('should return "5.0.0-rc.0" for currentVersion = "4.2.1"', () => {
+    expect(getNextMajorVersion("4.2.1")).toBe("5.0.0-rc.0");
+  });
+
+  test("should throw an error for an invalid version", () => {
+    expect(() => getNextMajorVersion("invalid.version")).toThrow(
+      "Failed to determine the next major version."
+    );
+  });
+});
+
+describe("getNextMinorVersion function", () => {
+  test('should return "3.5.0-rc.1" for currentVersion = "3.5.0-rc.0"', () => {
+    expect(getNextMinorVersion("3.5.0-rc.0")).toBe("3.5.0-rc.1");
+  });
+
+  test('should return "2.3.0-rc.2" for currentVersion = "2.3.0-rc.1"', () => {
+    expect(getNextMinorVersion("2.3.0-rc.1")).toBe("2.3.0-rc.2");
+  });
+
+  test('should return "4.0.0-rc.3" for currentVersion = "4.0.0-rc.2"', () => {
+    expect(getNextMinorVersion("4.0.0-rc.2")).toBe("4.0.0-rc.3");
+  });
+
+  test("should throw an error for a final tag", () => {
+    expect(() => getNextMinorVersion("1.0.1")).toThrow(
+      "Failed to determine the next minor version."
+    );
+  });
+
+  test("should throw an error for an invalid version", () => {
+    expect(() => getNextMinorVersion("invalid.version")).toThrow(
+      "Failed to determine the next minor version."
+    );
+  });
+
+  test("should throw an error if given an empty string", () => {
+    expect(() => getNextMinorVersion("")).toThrow(
+      "Failed to determine the next minor version."
+    );
+  });
+
+  test("should throw an error if given null", () => {
+    expect(() => getNextMinorVersion(null)).toThrow(
+      "Failed to determine the next minor version."
+    );
+  });
+
+  test("should throw an error if given undefined", () => {
+    expect(() => getNextMinorVersion(undefined)).toThrow(
+      "Failed to determine the next minor version."
+    );
   });
 });

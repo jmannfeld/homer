@@ -1,70 +1,64 @@
+import chalk from "chalk";
 import { execSync } from "child_process";
 import simpleGit from "simple-git";
-import semver from "semver";
 import {
   createReleaseBranchAndTag,
   getPackageVersion,
   pushVersionCommitAndTag,
   pullAndFetch,
+  updateMainBranchVersion,
 } from "../lib/utils.js";
 
-export default function forkCommand(typeOfFork) {
+/**
+ * Handles the process of forking a new release branch from the main branch.
+ *
+ * - Ensures the current branch is `main`.
+ * - Pulls the latest changes from the remote repository.
+ * - Retrieves the current package version.
+ * - Creates a new release branch and tag based on the fork type (major or minor).
+ * - Increments the main branch version accordingly.
+ * - Pushes all changes and tags to the remote repository.
+ *
+ * @param {string} typeOfFork - The type of fork to create (`major` or `minor`).
+ */
+export default async function forkCommand(typeOfFork) {
   const git = simpleGit();
 
-  git.branch((err, branchSummary) => {
-    if (err) {
-      console.error("❌ Error: Unable to determine the current branch.");
-      console.error("🔹 Tip: Make sure you are inside a Git repository.");
-      process.exit(1); // Exit with a non-zero code to indicate failure
-    }
+  try {
+    const branchSummary = await git.branch();
+    console.log(`📌 Current branch: ${branchSummary.current}\n`);
 
-    if (branchSummary.current === "main") {
-      // Pull the latest changes from the remote repository
-      pullAndFetch(branchSummary.current);
-
-      // Get current version
-      // const currentVersion = getCurrentVersion();
-      getPackageVersion().then((currentVersion) => {
-        console.log("Version:", currentVersion);
-
-        const [rcBranch, rcTag] = createReleaseBranchAndTag(
-          currentVersion,
-          typeOfFork
-        );
-
-        // Increment the main branch version after creating release branch
-        execSync(`git checkout ${branchSummary.current}`, {
-          stdio: "inherit",
-        });
-
-        console.log("Running `npm version preminor/major`...");
-        if (typeOfFork === "major") {
-          const nextPreMajorMain = semver.inc(
-            currentVersion,
-            "premajor",
-            "dev"
-          );
-          const nextPreMinorMain = semver.inc(
-            nextPreMajorMain,
-            "preminor",
-            "dev"
-          );
-          execSync(`npm version ${nextPreMinorMain}`, {
-            stdio: "inherit",
-          });
-        } else {
-          execSync("npm version preminor --preid=dev", {
-            stdio: "inherit",
-          });
-        }
-        pushVersionCommitAndTag(branchSummary.current);
-      });
-    } else {
+    if (branchSummary.current !== "main") {
       console.error("❌ Error: Not on the 'main' branch.");
       console.error(
         "🔹 Tip: The fork command should be run from the 'main' branch."
       );
       process.exit(1);
     }
-  });
+
+    // Pull latest changes from remote
+    pullAndFetch(branchSummary.current);
+
+    const currentVersion = await getPackageVersion();
+
+    createReleaseBranchAndTag(currentVersion, typeOfFork);
+
+    console.log(chalk.gray("────────────────────────────────────\n"));
+
+    console.log("🔼 Incrementing main branch...");
+    execSync(`git checkout ${branchSummary.current}`, { stdio: "ignore" });
+
+    updateMainBranchVersion(typeOfFork, currentVersion);
+
+    pushVersionCommitAndTag(branchSummary.current);
+
+    console.log(
+      `✅ ${
+        typeOfFork.charAt(0).toUpperCase() + typeOfFork.slice(1)
+      } fork completed successfully!`
+    );
+  } catch (error) {
+    console.error(`❌ Error: ${error.message}`);
+    process.exit(1);
+  }
 }
