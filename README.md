@@ -51,4 +51,75 @@ npm link
 🎉 You're all set!
 Now you can start using the project. 🚀
 
-Run `homer --help` to view all of the available commands.
+## 📌 Usage
+
+Run `homer` to display the available commands:
+
+```sh
+homer
+homer -h
+homer --help
+```
+
+### 🔹 Display Version
+
+```sh
+homer -v
+homer --version
+```
+
+## 🔄 Commands
+
+### 🏷️ Tag Management
+
+Create a pre-release tag:
+
+```sh
+homer tag
+```
+
+- Tags the current branch with a pre-release version.
+
+Create a final release tag:
+
+```sh
+homer tag final
+```
+
+- Tags the current branch with a final version.
+
+## 🔀 Branch Management
+
+Create a new minor release branch:
+
+```sh
+homer fork minor
+```
+
+- Creates a minor release branch (e.g., release/1.3).
+
+Create a new major release branch:
+
+```sh
+homer fork major
+```
+
+Creates a major release branch (e.g., release/2.0).
+
+## ⚙️ How It Works
+
+### 📌 Forking Strategy
+
+`homer fork minor` → Creates a new minor release branch.
+
+`homer fork major` → Creates a new major release branch.
+
+### 🏷️ Tagging Strategy
+
+`homer tag` → Creates a pre-release tag.
+
+- In main branch: '-dev' tag
+- In release branches: '-rc' tag
+- All other branches will create and increment tags based on the branch name
+
+`homer tag final` → Converts a release candidate into a final version.
